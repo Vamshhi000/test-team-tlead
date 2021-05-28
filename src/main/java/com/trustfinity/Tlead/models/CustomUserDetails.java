@@ -70,8 +70,9 @@ public class CustomUserDetails implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		 SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(user.getEmail());
-       return List.of(simpleGrantedAuthority);
+//		 SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(user.getEmail());
+//       return List.of(simpleGrantedAuthority);
+		return null;
 	}
     
 }
