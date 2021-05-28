@@ -12,7 +12,11 @@ public class CustomUserDetails implements UserDetails {
 
 
 	
-    private Users user;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private Users user;
 
     public CustomUserDetails(Users user) {
         this.user = user;
