@@ -12,10 +12,7 @@ public class CustomUserDetails implements UserDetails {
 
 
 	
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+
 	private Users user;
 
     public CustomUserDetails(Users user) {
@@ -23,12 +20,12 @@ public class CustomUserDetails implements UserDetails {
     }
 	
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-
-        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(user.getEmail());
-        return List.of(simpleGrantedAuthority);
-    }
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//
+//        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(user.getEmail());
+//        return List.of(simpleGrantedAuthority);
+//    }
 
     @Override
     public String getPassword() {
@@ -68,6 +65,13 @@ public class CustomUserDetails implements UserDetails {
 
 	public void setUser(Users user) {
 		this.user = user;
+	}
+
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		 SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(user.getEmail());
+       return List.of(simpleGrantedAuthority);
 	}
     
 }
