@@ -136,7 +136,7 @@ public class UserServiceImpl implements UserService{
 			
 			
 			otpReminder(otp, users);
-			 Twilio.init("ACddc102c136dea0ed04411a3567120acf","5a58ca1c1141a2daee99642997e11105");
+			 Twilio.init("ACddc102c136dea0ed04411a3567120acf","64ecd769525b7e1c81884021ecc983d6");
 		        Message message = Message.creator( new PhoneNumber(users.getPhoneNumber()), new PhoneNumber("+18434737959"),bodyy)           
 		                    
 		            .create();
