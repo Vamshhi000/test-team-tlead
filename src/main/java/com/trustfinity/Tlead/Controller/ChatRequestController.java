@@ -46,48 +46,54 @@ public class ChatRequestController {
 	private ChatRepository chatRepository;
 	
     @GetMapping("searchResult/{name}")
-    public ResponseEntity<List<ChatRequest>> searchResult(@PathVariable String name,@RequestParam("email") String email){
+    public ResponseEntity<?> searchResult(@PathVariable String name,@RequestParam("email") String email){
 		List<ChatRequest> reqList= new ArrayList<ChatRequest>();
     	Users usersEm=userRepository.findByEmail(name);
     	Users usersPh=userRepository.findByPhoneNumberr(name);
 
 
     		
-    		if(usersEm!=null) {
-        		if(usersEm.getEmail().equals(email)) {
+    		try {
+    			if(usersEm!=null) {
+            		if(usersEm.getEmail().equals(email)) {
 
-        					reqList.add(null);
-        				 	return new ResponseEntity<List<ChatRequest>>(reqList,HttpStatus.OK);
-        		}else {
-        	    	List<ChatRequest> userss=chatRequestService.searchResult(name,email);
-        	    	List<ChatRequest> searchfilterDto=searchfilter(userss,name,email);
-        	    	return new ResponseEntity<List<ChatRequest>>(searchfilterDto,HttpStatus.OK);
-        		}
-        	}
-     	
-        	if(usersPh!=null) {
-        		
-        		if(usersPh.getEmail().equals(email)) {
-        			
-    				reqList.add(null);
-    			 	return new ResponseEntity<List<ChatRequest>>(reqList,HttpStatus.OK);
-        		}else {
+            					reqList.add(null);
+            				 	return new ResponseEntity<List<ChatRequest>>(reqList,HttpStatus.OK);
+            		}else {
+            	    	List<ChatRequest> userss=chatRequestService.searchResult(name,email);
+            	    	List<ChatRequest> searchfilterDto=searchfilter(userss,name,email);
+            	    	return new ResponseEntity<List<ChatRequest>>(searchfilterDto,HttpStatus.OK);
+            		}
+            	}
+         	
+            	if(usersPh!=null) {
+            		
+            		if(usersPh.getEmail().equals(email)) {
+            			
+        				reqList.add(null);
+        			 	return new ResponseEntity<List<ChatRequest>>(reqList,HttpStatus.OK);
+            		}else {
+            	    	List<ChatRequest> userss=chatRequestService.searchResult(name,email);
+              	    	List<ChatRequest> searchfilterDto=searchfilter(userss,name,email);
+            	    	return new ResponseEntity<List<ChatRequest>>(searchfilterDto,HttpStatus.OK);
+            		}
+            	}
+            	
+            	else {
+            		
         	    	List<ChatRequest> userss=chatRequestService.searchResult(name,email);
           	    	List<ChatRequest> searchfilterDto=searchfilter(userss,name,email);
         	    	return new ResponseEntity<List<ChatRequest>>(searchfilterDto,HttpStatus.OK);
-        		}
-        	}
-        	
-        	else {
-        		
-    	    	List<ChatRequest> userss=chatRequestService.searchResult(name,email);
-      	    	List<ChatRequest> searchfilterDto=searchfilter(userss,name,email);
-    	    	return new ResponseEntity<List<ChatRequest>>(searchfilterDto,HttpStatus.OK);
-        	}
+            	}
 
+			} catch (Exception e) {
+	    		ResponceDto responceDto = new ResponceDto();
+	    		responceDto.setMsg("INTERNAL SERVER ERROR");
+	    	  	return new ResponseEntity<ResponceDto>(responceDto,HttpStatus.BAD_REQUEST);
+			}
         	
         	
-//    	}
+
     
     	
     }
@@ -97,29 +103,43 @@ public class ChatRequestController {
     	ChatRequest chatRequestt =chatRequestRepository.findByRequestEmailAndUsersEmail(chatRequest.getRequestEmail(),email);
     	
     	
-    	if(chatRequestt==null) {
-        	List<ChatRequest> svaedResponce=chatRequestService.saveRequests(chatRequest,email,sKey);
-        	return new ResponseEntity<List<ChatRequest>>(svaedResponce,HttpStatus.OK);
-    	}else {
-    		
+ 
+    	try {
+    	   	if(chatRequestt==null) {
+            	List<ChatRequest> svaedResponce=chatRequestService.saveRequests(chatRequest,email,sKey);
+            	return new ResponseEntity<List<ChatRequest>>(svaedResponce,HttpStatus.OK);
+        	}else {
+        		
+        		ResponceDto responceDto = new ResponceDto();
+        		responceDto.setMsg("Already Send Request");
+        	  	return new ResponseEntity<ResponceDto>(responceDto,HttpStatus.OK);
+        	}
+		} catch (Exception e) {
     		ResponceDto responceDto = new ResponceDto();
-    		responceDto.setMsg("Already Send Request");
-    	  	return new ResponseEntity<ResponceDto>(responceDto,HttpStatus.OK);
-    	}
+    		responceDto.setMsg("INTERNAL SERVER ERROR");
+    	  	return new ResponseEntity<ResponceDto>(responceDto,HttpStatus.BAD_REQUEST);
+		}
     }
     
     @PutMapping("cancelRequest/{sKey}")
     public ResponseEntity<?> cancelChatRequest(@RequestBody ChatRequest chatRequest,@RequestParam(name="email") String email,@PathVariable String sKey) {
-    	ChatRequest chatRequesttt =chatRequestRepository.findByRequestEmailAndUsersEmail(chatRequest.getRequestEmail(),email);	
-    	if(chatRequesttt==null) {
-    		ResponceDto responceDto = new ResponceDto();
-    		responceDto.setMsg("Already Canceled Request");
-    	  	return new ResponseEntity<ResponceDto>(responceDto,HttpStatus.OK);
 
-    	}else {
-    	  	List<ChatRequest> cancelResponce=chatRequestService.cancelChatRequest(chatRequest.getRequestEmail(),sKey,email);
-        	return new ResponseEntity<List<ChatRequest>>(cancelResponce,HttpStatus.OK);
-    	}
+    	try {
+        	ChatRequest chatRequesttt =chatRequestRepository.findByRequestEmailAndUsersEmail(chatRequest.getRequestEmail(),email);	
+        	if(chatRequesttt==null) {
+        		ResponceDto responceDto = new ResponceDto();
+        		responceDto.setMsg("Already Canceled Request");
+        	  	return new ResponseEntity<ResponceDto>(responceDto,HttpStatus.OK);
+
+        	}else {
+        	  	List<ChatRequest> cancelResponce=chatRequestService.cancelChatRequest(chatRequest.getRequestEmail(),sKey,email);
+            	return new ResponseEntity<List<ChatRequest>>(cancelResponce,HttpStatus.OK);
+        	}
+		} catch (Exception e) {
+    		ResponceDto responceDto = new ResponceDto();
+    		responceDto.setMsg("INTERNAL SERVER ERROR");
+    	  	return new ResponseEntity<ResponceDto>(responceDto,HttpStatus.BAD_REQUEST);
+		}
     }
 
  public List<ChatRequest> searchfilter(List<ChatRequest> userss,String name,String email){

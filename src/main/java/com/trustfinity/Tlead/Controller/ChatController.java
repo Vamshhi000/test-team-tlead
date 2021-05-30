@@ -35,26 +35,41 @@ public class ChatController {
 	
 		    @PostMapping("saveFriends")
 	    public ResponseEntity<?> saveFriends(@RequestBody  ChatAccept chatAccept,@RequestParam("email") String email){
-	    	if(chatRepository.findByChatEmailAndUsersEmail(chatAccept.getAcceptEmail(), email)==null) {
-		    	chatservice.saveFriends(chatAccept,email);
-		    	List<ChatModel> chModel= chatservice.getAllFrnds(email);
-		      	return new ResponseEntity<List<ChatModel>>(chModel,HttpStatus.OK);
-	    		
-	    	}else {
-	    		
-	    		ResponceDto responcedto= new ResponceDto();
-	    		responcedto.setMsg("already Accepted");
-	        	return new ResponseEntity<ResponceDto>(responcedto,HttpStatus.OK);
-	    	}
+
+		    	try {
+			    	if(chatRepository.findByChatEmailAndUsersEmail(chatAccept.getAcceptEmail(), email)==null) {
+				    	chatservice.saveFriends(chatAccept,email);
+				    	List<ChatModel> chModel= chatservice.getAllFrnds(email);
+				      	return new ResponseEntity<List<ChatModel>>(chModel,HttpStatus.OK);
+			    		
+			    	}else {
+			    		
+			    		ResponceDto responcedto= new ResponceDto();
+			    		responcedto.setMsg("already Accepted");
+			        	return new ResponseEntity<ResponceDto>(responcedto,HttpStatus.OK);
+			    	}
+				} catch (Exception e) {
+					ResponceDto responceDto = new ResponceDto();
+					responceDto.setMsg("INTERNAL SERVER ERROR");
+				  	return new ResponseEntity<ResponceDto>(responceDto,HttpStatus.BAD_REQUEST);
+				}
 
 	    	
 	    	
 	    }
 	    
 	    @GetMapping("getfrnds/{email}")
-	    public ResponseEntity<List<ChatModel>> getAllfrnds(@PathVariable String email){
+	    public ResponseEntity<?> getAllfrnds(@PathVariable String email){
+	    try {	
+	    	
 	    	List<ChatModel> chModel= chatservice.getAllFrnds(email);
 	      	return new ResponseEntity<List<ChatModel>>(chModel,HttpStatus.OK);
+	    } catch (Exception e) {
+			ResponceDto responceDto = new ResponceDto();
+			responceDto.setMsg("INTERNAL SERVER ERROR");
+		  	return new ResponseEntity<ResponceDto>(responceDto,HttpStatus.BAD_REQUEST);
+		}
+	
 	    }
 	   
 	    

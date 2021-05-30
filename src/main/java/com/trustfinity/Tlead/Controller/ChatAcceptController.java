@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.trustfinity.Tlead.Service.ChatAcceptService;
 import com.trustfinity.Tlead.models.ChatAccept;
 import com.trustfinity.Tlead.models.ChatRequest;
+import com.trustfinity.Tlead.models.ResponceDto;
 
 @Controller
 @RequestMapping(value="/chatAccept")
@@ -28,10 +29,16 @@ public class ChatAcceptController {
 
 	
 	@GetMapping(("getAllRequsts/{email}"))
-	public ResponseEntity<List<ChatAccept>> getAllRequsts(@PathVariable String email) {
+	public ResponseEntity<?> getAllRequsts(@PathVariable String email) {
 		
+	try {
 		List<ChatAccept> chatAcceptList=chatAcceptService.getAllRequests(email);
     	return new ResponseEntity<List<ChatAccept>>(chatAcceptList,HttpStatus.OK);
+	} catch (Exception e) {
+		ResponceDto responceDto = new ResponceDto();
+		responceDto.setMsg("INTERNAL SERVER ERROR");
+	  	return new ResponseEntity<ResponceDto>(responceDto,HttpStatus.BAD_REQUEST);
+	}
 	}
 	
 	@GetMapping("/cancelAccept/{acceptEmail}")

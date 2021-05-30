@@ -402,6 +402,41 @@ public class UserController {
 		
 	}
 	
-
+	@PostMapping("/AdminregisterUser")
+	public ResponseEntity<ResponceDto> AdminregisterUser(@RequestBody Users users) throws EmailFound{
+		ResponceDto responceDto= new ResponceDto();
+		Users userrsemail=userRepository.findByEmail(users.getEmail());
+		Users userrsnumber=userRepository.findByPhoneNumberr(users.getPhoneNumber());
+		try {
+			if(userrsemail==null) {
+				if(userrsnumber==null) {
+					userService.registerUser(users);
+					responceDto.setMsg("Sucussfully Registered! please login");
+					logger.info("registered Sucussfully");
+					return new ResponseEntity<ResponceDto>(responceDto,HttpStatus.OK);
+				}else {
+					throw new NumberFound("number already registered");
+				}
+			}else {
+				throw new EmailFound("User Not Registered");
+			}
+		} catch (EmailFound e) {
+			responceDto.setMsg("Already registered with this Email");
+//			logger.error("chcked exception",e);
+			return new ResponseEntity<ResponceDto>(responceDto,HttpStatus.BAD_REQUEST);
+		} catch (NumberFound e) {
+			responceDto.setMsg("Already registered with this Number");
+//			logger.error("chcked exception",e);
+			return new ResponseEntity<ResponceDto>(responceDto,HttpStatus.BAD_REQUEST);
+		}
+		
+		
+		catch (Exception e) {
+			logger.error("chcked exception",e);
+			responceDto.setMsg("Unable to register");
+			return new ResponseEntity<ResponceDto>(responceDto,HttpStatus.BAD_REQUEST);
+		}
+		
+	}
 	
 }
