@@ -20,6 +20,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").setAllowedOrigins("https://team-tlead.herokuapp.com:8080").withSockJS();
+        registry.addEndpoint("/ws").withSockJS();
     }
 }
+//http://localhost:4200/RegisterComponent?refId=VAM5YU9830
